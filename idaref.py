@@ -5,12 +5,30 @@ import os
 ref_term = False
 v = None
 db_dir = None
+inst_map = {}
 
 def create(path="."):
 	global v
 	global db_dir
 
 	db_dir = path
+	dbpath = db_dir + os.sep + 'asm.sqlite'
+
+	con = sq.connect(dbpath)
+	cur = con.cursor()
+	cur.execute("SELECT mnem, description FROM instructions")
+	con.commit()
+
+	rows = cur.fetchall()
+	for row in rows:
+		inst = row[0]
+		lines = row[1].split("\n")
+		inst_map[inst] = lines
+
+	con.close()
+
+	print len(inst_map)
+		
 	v = idaapi.simplecustviewer_t()
 	v.Create("Instruction Reference")
 	v.Show()
@@ -18,32 +36,20 @@ def create(path="."):
 	threading.Timer(1, update).start()
 
 def update():
-	dbpath = db_dir + os.sep + 'asm.sqlite'
-
-	con = sq.connect(dbpath)
-	cur = con.cursor()
-
 	v.ClearLines()
-	v.Refresh()
-	
+	v.Refresh
 	inst = GetMnem(ScreenEA())
 
-	cur.execute("SELECT description FROM instructions WHERE mnem=:mnem LIMIT 1", {"mnem": inst.upper()})
-	con.commit()
+	text = inst_map[inst.upper()]
 
-	rows = cur.fetchall()
-	for row in rows:
-		for line in row[0].split("\n"):
-			line = line.encode('utf-8')
-			v.AddLine(line)
+	for line in text:
+		line = line.encode('utf8')
+		v.AddLine(line)
 
-		v.AddLine("+++++++")
-
-	if(len(rows) == 0):
+	if(text == None):
 		v.AddLine(inst + " not documented.")
 
 	v.Refresh()
-	con.close()
 
 	if(not ref_term):
 		threading.Timer(1, update).start()
