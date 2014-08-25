@@ -37,9 +37,14 @@ class InstructionReference:
 
 				if(ref in self.inst_map):
 					self.inst_map[inst] = self.inst_map[ref]
+		
+		title = "Instruction Reference"
+
+		self.v = idaapi.find_tform(title)
+		if(self.v == None):
+			self.v = idaapi.simplecustviewer_t()
+			self.v.Create(title)
 			
-		self.v = idaapi.simplecustviewer_t()
-		self.v.Create("Instruction Reference")
 		self.v.Show()
 
 		threading.Timer(1, lambda: self.update()).start()
