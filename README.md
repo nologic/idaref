@@ -10,5 +10,6 @@ of thought and have dig out the reference manual. Which got me thinking:
 
 Enter IdaRef:
 ![](https://raw.githubusercontent.com/nologic/idaref/master/screenshot/idaref.png)
-It will monitor the location for your cursor (ScreenEA) and display the full
-documentation of the instruction. At the moment it only supports x86.
+The plugin will monitor the location for your cursor (ScreenEA) and display the full
+documentation of the instruction. At the moment it only supports x86-64, however
+support for other architectures is relatively easy.
