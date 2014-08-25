@@ -44,7 +44,7 @@ class InstructionReference:
 		if(self.v == None):
 			self.v = idaapi.simplecustviewer_t()
 			self.v.Create(title)
-			
+
 		self.v.Show()
 
 		threading.Timer(1, lambda: self.update()).start()
@@ -52,7 +52,7 @@ class InstructionReference:
 	def cleanInstruction(self, inst):
 		inst = inst.upper()
 		# hacks for x86
-		if(inst[0:1] == 'J'):
+		if(inst[0:1] == 'J' and inst != 'JMP'):
 			inst = "Jcc"
 		elif(inst[0:4] == "LOOP"):
 			inst = "LOOP"
