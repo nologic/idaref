@@ -16,15 +16,22 @@ class InstructionReference:
 	def create(self, path="."):
 		doc_opts = glob.glob(path + os.sep + "*.sqlite")
 		
-		prompt = ["What platform do you want to use?"]
-		i = 1
-		for c in doc_opts:
-			basefile = os.path.splitext(os.path.basename(c))[0]
-			prompt.append("%d - %s" % (i, basefile))
-			i = i + 1
+		if(len(doc_opts) == 0):
+			Warning("Couldn't find any databases in " + path)
 
-		sel = AskLong(1, "\n".join(prompt))
-		dbpath = doc_opts[int(sel) - 1]
+		dbpath = doc_opts[0]
+		if(len(doc_opts) > 1):
+			prompt = ["What platform do you want to use?"]
+			i = 1
+			for c in doc_opts:
+				basefile = os.path.splitext(os.path.basename(c))[0]
+				prompt.append("%d - %s" % (i, basefile))
+				i = i + 1
+
+			sel = AskLong(1, "\n".join(prompt))
+			dbpath = doc_opts[int(sel) - 1]
+
+		print "Using database: " + dbpath
 
 		con = sq.connect(dbpath)
 		cur = con.cursor()
