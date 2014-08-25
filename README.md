@@ -57,7 +57,7 @@ columns and place it in the the script directory.
     
 When working with x86, I noticed that many instructions point to the same documentation.
 So, the plugin supports single level referencing. Just place '-R:[new instruction]' into
-description to redirect the loading. 'new instruction' the the target. So, when loading 
+description to redirect the loading. 'new instruction' is the target. So, when loading 
 the script will detect the link and load the new target automatically.
 
     cur.execute("INSERT INTO instructions VALUES (?, ?, ?)", ("x86", inst, "-R:%s" % first_inst))
