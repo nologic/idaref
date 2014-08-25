@@ -26,9 +26,17 @@ class InstructionReference:
 		for row in rows:
 			inst = row[0]
 			lines = row[1].split("\n")
+
 			self.inst_map[inst] = lines
 
 		con.close()
+
+		for (inst, data) in self.inst_map.iteritems():
+			if(data[0][0:3] == "-R:"):
+				ref = data[0][3:]
+
+				if(ref in self.inst_map):
+					self.inst_map[inst] = self.inst_map[ref]
 			
 		self.v = idaapi.simplecustviewer_t()
 		self.v.Create("Instruction Reference")
@@ -36,8 +44,26 @@ class InstructionReference:
 
 		threading.Timer(1, lambda: self.update()).start()
 
+	def cleanInstruction(self, inst):
+		inst = inst.upper()
+		# hacks for x86
+		if(inst[0:1] == 'J'):
+			inst = "Jcc"
+		elif(inst[0:4] == "LOOP"):
+			inst = "LOOP"
+		elif(inst[0:3] == "INT"):
+			inst = "INT n"
+		elif(inst[0:5] == "FCMOV"):
+			inst = "FCMOVcc"
+		elif(inst[0:4] == "CMOV"):
+			inst = "CMOVcc"
+		elif(inst[0:3] == "SET"):
+			inst = "SETcc"
+
+		return inst
+
 	def update(self):
-		inst = GetMnem(ScreenEA()).upper()
+		inst = self.cleanInstruction(GetMnem(ScreenEA()))
 
 		if(inst != self.last_inst):
 			self.last_inst = inst
