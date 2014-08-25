@@ -1,6 +1,7 @@
 import time, threading
 import sqlite3 as sq
 import os
+import inspect
 
 class InstructionReference:
 	def __init__(self):
@@ -9,6 +10,8 @@ class InstructionReference:
 		self.db_dir = None
 		self.inst_map = {}
 		self.last_inst = None
+
+		self.create(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
 	def create(self, path="."):
 		self.db_dir = path
