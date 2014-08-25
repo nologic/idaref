@@ -33,4 +33,17 @@ terminate was called.
 
     ref.update()
     
+Skeletons in the closet
+-----------------------
+* I found that IDA's GUI is not as stable as I'd want it to be. The frequent 
+refreshes can make it crash. It caused me problems under Wine and RDP in the
+past. I've reduced the amount of work that the GUI has to do and it has been
+working well for me.
+
+* The documentation database was created using a rather hackish screen scraping
+technique by the x86doc project which I forked. So, there are probably some 
+strange characters or tags in the text. At least, it is a mechanical process
+so I expect that the information is correct relative to the original Intel PDF.
+
 Enjoy!
+------
