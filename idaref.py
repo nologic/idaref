@@ -2,20 +2,29 @@ import time, threading
 import sqlite3 as sq
 import os
 import inspect
+import glob
 
 class InstructionReference:
 	def __init__(self):
 		self.ref_term = False
 		self.v = None
-		self.db_dir = None
 		self.inst_map = {}
 		self.last_inst = None
 
 		self.create(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
 	def create(self, path="."):
-		self.db_dir = path
-		dbpath = self.db_dir + os.sep + 'asm.sqlite'
+		doc_opts = glob.glob(path + os.sep + "*.sqlite")
+		
+		prompt = ["What platform do you want to use?"]
+		i = 1
+		for c in doc_opts:
+			basefile = os.path.splitext(os.path.basename(c))[0]
+			prompt.append("%d - %s" % (i, basefile))
+			i = i + 1
+
+		sel = AskLong(1, "\n".join(prompt))
+		dbpath = doc_opts[int(sel) - 1]
 
 		con = sq.connect(dbpath)
 		cur = con.cursor()
@@ -74,7 +83,7 @@ class InstructionReference:
 			self.last_inst = inst
 			
 			self.v.ClearLines()
-			self.v.Refresh()
+			#self.v.Refresh()
 			
 			if(inst in self.inst_map):
 				text = self.inst_map[inst]
