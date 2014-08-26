@@ -10,6 +10,7 @@ class InstructionReference:
 		self.v = None
 		self.inst_map = {}
 		self.last_inst = None
+		self.is_loaded = False
 
 		self.create(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
@@ -60,10 +61,22 @@ class InstructionReference:
 		if(self.v == None):
 			self.v = idaapi.simplecustviewer_t()
 			self.v.Create(title)
+			self.v.Show()
 
-		self.v.Show()
+			def update():
+				self.update()
 
-		threading.Timer(1, lambda: self.update()).start()
+				return -1 if idaapi.find_tform(title) == None else 1000
+
+			if('register_timer' in dir(idaapi)):
+				idaapi.register_timer(1000, update)
+
+				self.is_loaded = True
+			else:
+				print "Sorry I can't support auto-refresh in your version of IDA."
+				print "Use 'ref.update()' to get documentation for your instruction."
+		else:
+			print "Already loaded. Please close old instance first."
 
 	def cleanInstruction(self, inst):
 		inst = inst.upper()
@@ -90,7 +103,6 @@ class InstructionReference:
 			self.last_inst = inst
 			
 			self.v.ClearLines()
-			#self.v.Refresh()
 			
 			if(inst in self.inst_map):
 				text = self.inst_map[inst]
@@ -104,12 +116,7 @@ class InstructionReference:
 
 			self.v.Refresh()
 
-		if(not self.ref_term):
-			threading.Timer(1, lambda: self.update()).start()
-
-	def terminate(self):
-		self.ref_term = True
-
 ref = InstructionReference()
 
-print "Reference View loaded, ref:" + str(ref)
+if(ref.is_loaded):
+	print "Reference View loaded, ref:" + str(ref)
