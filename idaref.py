@@ -4,13 +4,17 @@ import os
 import inspect
 import glob
 
-class InstructionReference:
+class InstructionReference(idaapi.simplecustviewer_t):
 	def __init__(self):
 		self.ref_term = False
-		self.v = None
 		self.inst_map = {}
 		self.last_inst = None
 		self.is_loaded = False
+		self.do_auto = True
+
+		self.menu_update = None
+		self.menu_lookup = None
+		self.menu_autorefresh = None
 
 		self.create(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
@@ -57,14 +61,20 @@ class InstructionReference:
 		
 		title = "Instruction Reference"
 
-		self.v = idaapi.find_tform(title)
-		if(self.v == None):
-			self.v = idaapi.simplecustviewer_t()
-			self.v.Create(title)
-			self.v.Show()
+		if(idaapi.find_tform(title) == None):
+			if(not idaapi.simplecustviewer_t.Create(self, title)):
+				print "Unable to open"
+				return False
+
+			self.menu_update = self.AddPopupMenu("Update View")
+			self.menu_lookup = self.AddPopupMenu("Lookup Instruction")
+			self.menu_autorefresh = self.AddPopupMenu("Toggle Auto-refresh")
+
+			self.Show()
 
 			def update():
-				self.update()
+				if(self.do_auto):
+					self.update()
 
 				return -1 if idaapi.find_tform(title) == None else 1000
 
@@ -97,24 +107,43 @@ class InstructionReference:
 		return inst
 
 	def update(self):
-		inst = self.cleanInstruction(GetMnem(ScreenEA()))
+		inst = GetMnem(ScreenEA())
 
 		if(inst != self.last_inst):
-			self.last_inst = inst
+			self.load_inst(inst)
 			
-			self.v.ClearLines()
-			
-			if(inst in self.inst_map):
-				text = self.inst_map[inst]
+	def load_inst(self, inst):
+		inst = self.cleanInstruction(inst)
+		self.last_inst = inst
+		
+		self.ClearLines()
+		
+		if(inst in self.inst_map):
+			text = self.inst_map[inst]
 
-				for line in text:
-					line = line.encode('utf8')
-					self.v.AddLine(line)
+			for line in text:
+				line = line.encode('utf8')
+				self.AddLine(line)
 
-			else:
-				self.v.AddLine(inst + " not documented.")
+		else:
+			self.AddLine(inst + " not documented.")
 
-			self.v.Refresh()
+		self.Refresh()
+		self.Jump(0, 0)
+
+	def OnPopupMenu(self, menu_id):
+		if menu_id == self.menu_update:
+		 	self.update()
+		elif menu_id == self.menu_lookup:
+			inst = AskStr(self.last_inst, "Instruction: ")
+			if(inst != None):
+				self.load_inst(inst)
+		elif menu_id == self.menu_autorefresh:
+			self.do_auto = not self.do_auto
+		else:
+			# Unhandled
+			return False
+		return True
 
 ref = InstructionReference()
 
