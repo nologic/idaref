@@ -31,7 +31,7 @@ output right-click on the tab window to get a menu:
 * Lookup Instruction - Manual load documentation, you'll be prompted for the instruction.
 * Toggle Auto-refresh - Turn on/off auto loading of documentation and rely on the first two options.
 
-![](https://raw.githubusercontent.com/nologic/idaref/master/screenshot/idaref_menu.png)
+![picture](https://raw.githubusercontent.com/nologic/idaref/master/screenshot/idaref_menu.png)
     
 Internals
 ---------
