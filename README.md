@@ -24,16 +24,14 @@ view in your IDA workspace. In this view is where the text will be displayed. No
 click on the instruction you're curious about and within a second the documentation
 will populate the view.
 
-If you don't like automatic loading of the reference then run this command. It will 
-disable the automatic refresh.
+Once loaded, the plugin can be turned off by closing the tab window. To control the
+output right-click on the tab window to get a menu:
 
-    ref.terminate()
+* Update View - Load documentation for currectly selected instruction.
+* Lookup Instruction - Manual load documentation, you'll be prompted for the instruction.
+* Toggle Auto-refresh - Turn on/off auto loading of documentation and rely on the first two options.
 
-If the automatic refresh doesn't work (I've had problems under Wine) then you can
-force a refresh to reload the text by calling update. This will work even after
-terminate was called.
-
-    ref.update()
+![](https://raw.githubusercontent.com/nologic/idaref/master/screenshot/idaref_menu.png)
     
 Internals
 ---------
