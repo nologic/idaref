@@ -52,3 +52,5 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+#sqlite file built from .sql source
+x86-64.sqlite
