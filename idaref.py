@@ -46,7 +46,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
 		rows = cur.fetchall()
 		for row in rows:
 			inst = row[0]
-			lines = row[1].split("\n")
+			lines = row[1].replace("\r\n", "\n").split("\n")
 
 			self.inst_map[inst] = lines
 
