@@ -39,6 +39,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
 		print "Using database: " + dbpath
 
 		con = sq.connect(dbpath)
+		con.text_factory = str
 		cur = con.cursor()
 		cur.execute("SELECT mnem, description FROM instructions")
 		con.commit()
@@ -113,6 +114,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
 			self.load_inst(inst)
 			
 	def load_inst(self, inst):
+		print inst
 		inst = self.cleanInstruction(inst)
 		self.last_inst = inst
 		
@@ -122,7 +124,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
 			text = self.inst_map[inst]
 
 			for line in text:
-				line = line.encode('utf8')
+				line = line.encode('utf8', 'ignore')
 				self.AddLine(line)
 
 		else:
