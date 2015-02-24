@@ -19,6 +19,8 @@ Usage
 Simply checkout or download the repository and make sure that the sqlite database
 file is in the same directory as the 'idaref' python script.
 
+Run 'python arm.py' to set up the ARM database or x86-64.py for x86-64.
+
 Execute the python script via File->Script File... or ALT+F7. This will open a new
 view in your IDA workspace. In this view is where the text will be displayed. Now
 click on the instruction you're curious about and within a second the documentation
