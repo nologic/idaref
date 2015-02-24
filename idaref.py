@@ -49,6 +49,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
 			inst = row[0]
 			lines = row[1].replace("\r\n", "\n").split("\n")
 
+			lines[0] = inst + ": " + lines[0]
 			self.inst_map[inst] = lines
 
 		con.close()
@@ -114,7 +115,6 @@ class InstructionReference(idaapi.simplecustviewer_t):
 			self.load_inst(inst)
 			
 	def load_inst(self, inst):
-		print inst
 		inst = self.cleanInstruction(inst)
 		self.last_inst = inst
 		
