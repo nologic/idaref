@@ -25,7 +25,7 @@ Simply checkout or download the repository and install it to your IDA plugins di
 You can also use the installer.sh file but you'll need to open it and edit the IDA path 
 if you're not using Mac OS and IDA 6.8.
 
-![](./idaref_start.png)
+![](./screenshot/idaref_start.png)
 
 Once loaded, the plugin can be turned ON but going to Edit/Start IdaRef menu option. To 
 control the output right-click on the tab window to get a menu:
