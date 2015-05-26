@@ -20,9 +20,27 @@ class InstructionReference(idaapi.simplecustviewer_t):
 
 	def create(self, path="."):
 		doc_opts = glob.glob(path + os.sep + "*.sqlite")
+		raw_docs = glob.glob(path + os.sep + "*.sql")
 		
+		if(len(doc_opts) != len(raw_docs)):
+			for input in raw_docs:
+				print "converting: %s" % input
+				output = input + "ite"
+				
+				in_file = open(input)
+				sql = in_file.read()
+				in_file.close()
+				
+				con = sq.connect(output)
+				con.executescript(sql)
+				con.close()
+
+				doc_opts.append(output)
+				print "Produced %s" % output
+
 		if(len(doc_opts) == 0):
 			Warning("Couldn't find any databases in " + path)
+			return
 
 		dbpath = doc_opts[0]
 		if(len(doc_opts) > 1):
