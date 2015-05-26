@@ -39,7 +39,7 @@ control the output right-click on the tab window to get a menu:
 Internals
 ---------
 Upon loading the script will look for SQlite databases in the same directory as the 
-itself. The naming convention for the database files is [arch name].sqlite. The 
+itself. The naming convention for the database files is [arch name].sql. The 
 [arch name] will be presented to the user as choice.
 
 The database has a table called 'instructions' and two columns called 'mnem' and
