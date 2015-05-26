@@ -11,8 +11,8 @@ of thought and have to dig out the reference manual. Which got me thinking:
 Enter IdaRef:
 ![](./screenshot/idaref.png)
 The plugin will monitor the location for your cursor (ScreenEA) and display the full
-documentation of the instruction. At the moment it only supports x86-64, however
-adding support for other architectures is relatively easy.
+documentation of the instruction. At the moment it only supports x86-64 and ARM, 
+however adding support for other architectures is relatively easy.
 
 Usage
 -----
@@ -27,7 +27,7 @@ if you're not using Mac OS and IDA 6.8.
 
 ![](./screenshot/idaref_start.png)
 
-Once loaded, the plugin can be turned ON but going to Edit/Start IdaRef menu option. To 
+Once loaded, the plugin can be turned ON by going to Edit/Start IdaRef menu option. To 
 control the output right-click on the tab window to get a menu:
 
 * Update View - Load documentation for currectly selected instruction.
