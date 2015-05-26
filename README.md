@@ -9,7 +9,7 @@ of thought and have to dig out the reference manual. Which got me thinking:
 <i>Why can't IDA just give me the full documentation?</i>
 
 Enter IdaRef:
-![](./screenshot/idaref.png=100x20)
+![](./screenshot/idaref.png)
 The plugin will monitor the location for your cursor (ScreenEA) and display the full
 documentation of the instruction. At the moment it only supports x86-64, however
 adding support for other architectures is relatively easy.
@@ -25,7 +25,7 @@ Simply checkout or download the repository and install it to your IDA plugins di
 You can also use the installer.sh file but you'll need to open it and edit the IDA path 
 if you're not using Mac OS and IDA 6.8.
 
-![](./idaref_start.png =250x)
+![](./idaref_start.png)
 
 Once loaded, the plugin can be turned ON but going to Edit/Start IdaRef menu option. To 
 control the output right-click on the tab window to get a menu:
@@ -34,7 +34,7 @@ control the output right-click on the tab window to get a menu:
 * Lookup Instruction - Manual load documentation, you'll be prompted for the instruction.
 * Toggle Auto-refresh - Turn on/off auto loading of documentation and rely on the first two options.
 
-![picture](https://raw.githubusercontent.com/nologic/idaref/master/screenshot/idaref_menu.png)
+![](./screenshot/idaref_menu.png)
     
 Internals
 ---------
