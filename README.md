@@ -9,7 +9,7 @@ of thought and have to dig out the reference manual. Which got me thinking:
 <i>Why can't IDA just give me the full documentation?</i>
 
 Enter IdaRef:
-![](./screenshot/idaref.png =100x20)
+![](./screenshot/idaref.png=100x20)
 The plugin will monitor the location for your cursor (ScreenEA) and display the full
 documentation of the instruction. At the moment it only supports x86-64, however
 adding support for other architectures is relatively easy.
