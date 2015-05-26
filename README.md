@@ -16,16 +16,19 @@ adding support for other architectures is relatively easy.
 
 Usage
 -----
-Simply checkout or download the repository and make sure that the sqlite database
-file is in the same directory as the 'idaref' python script.
+Simply checkout or download the repository and install it to your IDA plugins directory:
 
-Execute the python script via File->Script File... or ALT+F7. This will open a new
-view in your IDA workspace. In this view is where the text will be displayed. Now
-click on the instruction you're curious about and within a second the documentation
-will populate the view.
+    idaref.py -> /Applications/IDA Pro 6.8/idaq.app/Contents/MacOS/plugins/idaref.py
+    arm.sql -> /Applications/IDA Pro 6.8/idaq.app/Contents/MacOS/plugins/arm.sql
+    x86-64.sql -> /Applications/IDA Pro 6.8/idaq.app/Contents/MacOS/plugins/x86-64.sql
 
-Once loaded, the plugin can be turned off by closing the tab window. To control the
-output right-click on the tab window to get a menu:
+You can also use the installer.sh file but you'll need to open it and edit the IDA path 
+if you're not using Mac OS and IDA 6.8.
+
+![picture](https://raw.githubusercontent.com/nologic/idaref/master/screenshot/idaref_start.png)
+
+Once loaded, the plugin can be turned ON but going to Edit/Start IdaRef menu option. To 
+control the output right-click on the tab window to get a menu:
 
 * Update View - Load documentation for currectly selected instruction.
 * Lookup Instruction - Manual load documentation, you'll be prompted for the instruction.
