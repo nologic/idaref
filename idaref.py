@@ -19,24 +19,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
 		self.create(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
 
 	def create(self, path="."):
-		doc_opts = glob.glob(path + os.sep + "*.sqlite")
-		raw_docs = glob.glob(path + os.sep + "*.sql")
-		
-		if(len(doc_opts) != len(raw_docs)):
-			for input in raw_docs:
-				print "converting: %s" % input
-				output = input + "ite"
-				
-				in_file = open(input)
-				sql = in_file.read()
-				in_file.close()
-				
-				con = sq.connect(output)
-				con.executescript(sql)
-				con.close()
-
-				doc_opts.append(output)
-				print "Produced %s" % output
+		doc_opts = glob.glob(path + os.sep + "*.sql")
 
 		if(len(doc_opts) == 0):
 			Warning("Couldn't find any databases in " + path)
@@ -56,8 +39,10 @@ class InstructionReference(idaapi.simplecustviewer_t):
 
 		print "Using database: " + dbpath
 
-		con = sq.connect(dbpath)
+		con = sq.connect(":memory")
 		con.text_factory = str
+		con.executescript(open(dbpath).read())
+
 		cur = con.cursor()
 		cur.execute("SELECT mnem, description FROM instructions")
 		con.commit()
