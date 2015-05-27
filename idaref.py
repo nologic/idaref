@@ -180,15 +180,15 @@ class InstructionReference(idaapi.simplecustviewer_t):
         return inst
 
     def update(self, force = False):
-        inst = GetMnem(ScreenEA())
+        inst = self.cleanInstruction(GetMnem(ScreenEA()))
 
-        if(inst != self.last_inst or force):
+        if(inst != self.last_inst or force == True):
             self.load_inst(inst)
             
     def load_inst(self, inst, wasLookup = False):
         inst = self.cleanInstruction(inst)
 
-        if(not wasLookup):
+        if(wasLookup == False):
             self.last_inst = inst
         
         self.ClearLines()
