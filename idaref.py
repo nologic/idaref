@@ -15,60 +15,21 @@ class InstructionReference(idaapi.simplecustviewer_t):
         self.menu_update = None
         self.menu_lookup = None
         self.menu_autorefresh = None
+        self.change_arch = None
 
         self.title = "Instruction Reference"
         self.destroying = False;
 
-        self.create(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))))
+        self.base_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
-    def create(self, path="."):
-        doc_opts = glob.glob(path + os.sep + "*.sql")
+        self.archs = self.findManuals()
 
-        if(len(doc_opts) == 0):
-            Warning("Couldn't find any databases in " + path)
-            return
+        print "available architectures %s" % str(self.archs)
 
-        dbpath = doc_opts[0]
-        if(len(doc_opts) > 1):
-            prompt = ["What platform do you want to use?"]
-            i = 1
-            for c in doc_opts:
-                basefile = os.path.splitext(os.path.basename(c))[0]
-                prompt.append("%d - %s" % (i, basefile))
-                i = i + 1
+        self.create()
+        self.loadArchitecture(self.getIdaArchitecture())
 
-            sel = AskLong(1, "\n".join(prompt))
-            dbpath = doc_opts[int(sel) - 1]
-
-        print "Using database: " + dbpath
-
-        self.title = os.path.splitext(os.path.basename(dbpath))[0] + " Reference"
-
-        con = sq.connect(":memory:")
-        con.text_factory = str
-        con.executescript(open(dbpath).read())
-
-        cur = con.cursor()
-        cur.execute("SELECT mnem, description FROM instructions")
-        con.commit()
-
-        rows = cur.fetchall()
-        for row in rows:
-            inst = row[0]
-            lines = row[1].replace("\r\n", "\n").split("\n")
-
-            lines[0] = inst + ": " + lines[0]
-            self.inst_map[inst] = lines
-
-        con.close()
-
-        for (inst, data) in self.inst_map.iteritems():
-            if(data[0][0:3] == "-R:"):
-                ref = data[0][3:]
-
-                if(ref in self.inst_map):
-                    self.inst_map[inst] = self.inst_map[ref]
-
+    def create(self):
         if(idaapi.find_tform(self.title) == None):
             if(not idaapi.simplecustviewer_t.Create(self, self.title)):
                 print "Unable to open"
@@ -77,6 +38,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
             self.menu_update = self.AddPopupMenu("Update View")
             self.menu_lookup = self.AddPopupMenu("Lookup Instruction")
             self.menu_autorefresh = self.AddPopupMenu("Toggle Auto-refresh")
+            self.change_arch = self.AddPopupMenu("Change Architecture")
 
             self.Show()
 
@@ -107,6 +69,89 @@ class InstructionReference(idaapi.simplecustviewer_t):
         if(window):
             idaapi.close_tform(window, 0)
 
+    def findManuals(self):
+        doc_opts = glob.glob(self.base_path + os.sep + "*.sql")
+
+        if(len(doc_opts) == 0):
+            Warning("Couldn't find any databases in " + path)
+            return
+
+        available = []
+        
+        for c in doc_opts:
+            basefile = os.path.splitext(os.path.basename(c))[0]            
+            available.append(basefile)
+
+        return available
+
+    def askArchitecture(self, availList):
+        prompt = ["What platform do you want to use?"]
+
+        i = 1
+        for arch in availList:
+            prompt.append("%d - %s" % (i, arch))
+            i = i + 1
+
+        sel = AskLong(1, "\n".join(prompt))
+
+        if(sel is None):
+            return None
+
+        sel = int(sel)
+
+        if(sel > 0 and sel <= len(availList)):
+            return availList[sel - 1]
+
+        return None
+
+    def loadArchitecture(self, name):
+        # fix up name
+        name = name.lower()
+        if(name == "metapc"):
+            name = "x86-64"
+
+        self.arch = name
+
+        path = self.base_path
+        dbpath = path + os.sep + name + ".sql"
+
+        if(not os.path.isfile(dbpath)):
+            print "Manual not found for architecture: %s" % name
+            return False
+
+        con = sq.connect(":memory:")
+        con.text_factory = str
+        con.executescript(open(dbpath).read())
+
+        cur = con.cursor()
+        cur.execute("SELECT mnem, description FROM instructions")
+        con.commit()
+
+        rows = cur.fetchall()
+        for row in rows:
+            inst = row[0]
+            lines = row[1].replace("\r\n", "\n").split("\n")
+
+            lines[0] = inst + ": " + lines[0]
+            self.inst_map[inst] = lines
+
+        con.close()
+
+        for (inst, data) in self.inst_map.iteritems():
+            if(data[0][0:3] == "-R:"):
+                ref = data[0][3:]
+
+                if(ref in self.inst_map):
+                    self.inst_map[inst] = self.inst_map[ref]
+
+        print "Manual loaded for architecture: %s" % name
+        return True
+
+    def getIdaArchitecture(self):
+        inf = idaapi.get_inf_structure()
+
+        return inf.procName
+
     def OnClose(self):
         self.destroying = True
         self.is_loaded = False
@@ -134,15 +179,17 @@ class InstructionReference(idaapi.simplecustviewer_t):
 
         return inst
 
-    def update(self):
+    def update(self, force = False):
         inst = GetMnem(ScreenEA())
 
-        if(inst != self.last_inst):
+        if(inst != self.last_inst or force):
             self.load_inst(inst)
             
-    def load_inst(self, inst):
+    def load_inst(self, inst, wasLookup = False):
         inst = self.cleanInstruction(inst)
-        self.last_inst = inst
+
+        if(not wasLookup):
+            self.last_inst = inst
         
         self.ClearLines()
         
@@ -160,13 +207,19 @@ class InstructionReference(idaapi.simplecustviewer_t):
 
     def OnPopupMenu(self, menu_id):
         if menu_id == self.menu_update:
-            self.update()
+            self.update(True)
         elif menu_id == self.menu_lookup:
             inst = AskStr(self.last_inst, "Instruction: ")
             if(inst != None):
-                self.load_inst(inst)
+                self.load_inst(inst, True)
         elif menu_id == self.menu_autorefresh:
             self.do_auto = not self.do_auto
+        elif menu_id == self.change_arch:
+            arch = self.askArchitecture(self.archs)
+
+            if(arch != None):
+                self.loadArchitecture(arch)
+                self.update(True)
         else:
             # Unhandled
             return False
