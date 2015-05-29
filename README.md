@@ -1,41 +1,23 @@
-IdaRef
+HopperRef
 ======
-IDA Pro Full Instruction Reference Plugin - It's like auto-comments but useful.
+Hopper Full Instruction Reference Plugin.
 
-I'm generally pretty good at figuring out what various Intel instructions do.
-But, once in a while I need to either know some precise detail (i.e. exact 
-side effects of SUB) or come across a rare instruction. Then I break my train
-of thought and have to dig out the reference manual. Which got me thinking: 
-<i>Why can't IDA just give me the full documentation?</i>
+Shamelessly ported from the excellent [IdaRef plugin by nologic](https://github.com/nologic/idaref).
 
-Enter IdaRef:
-![](./screenshot/idaref.png)
-The plugin will monitor the location for your cursor (ScreenEA) and display the full
-documentation of the instruction. At the moment it only supports x86-64 and ARM, 
-however adding support for other architectures is relatively easy.
+![](./screenshot/hopperref.png)
 
 Usage
 -----
-Simply checkout or download the repository and install it to your IDA plugins directory:
+Simply checkout or download the repository and install it to your Hopper plugins directory:
 
-    idaref.py -> /Applications/IDA Pro 6.8/idaq.app/Contents/MacOS/plugins/idaref.py
-    arm.sql -> /Applications/IDA Pro 6.8/idaq.app/Contents/MacOS/plugins/arm.sql
-    x86-64.sql -> /Applications/IDA Pro 6.8/idaq.app/Contents/MacOS/plugins/x86-64.sql
+    Show Instruction Reference.py -> ~/Library/Application Support/Hopper/Scripts/Show Instruction Reference.py
+    arm.sql -> ~/Library/Application Support/Hopper/Scripts/arm.sql
+    x86-64.sql -> ~/Library/Application Support/Hopper/Scripts/x86-64.sql
 
-You can also use the installer.sh file but you'll need to open it and edit the IDA path 
-if you're not using Mac OS and IDA 6.8.
+You should see a "Show Instruction Reference" option in the Scripts menu after installation.
 
-![](./screenshot/idaref_start.png)
+*Now for plagiarized documentation from nologic because he did all the hard work*
 
-Once loaded, the plugin can be turned ON by going to Edit/Start IdaRef menu option. To 
-control the output right-click on the tab window to get a menu:
-
-* Update View - Load documentation for currectly selected instruction.
-* Lookup Instruction - Manual load documentation, you'll be prompted for the instruction.
-* Toggle Auto-refresh - Turn on/off auto loading of documentation and rely on the first two options.
-
-![](./screenshot/idaref_menu.png)
-    
 Internals
 ---------
 Upon loading the script will look for SQlite databases in the same directory as the 
