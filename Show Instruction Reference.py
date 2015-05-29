@@ -61,7 +61,7 @@ class InstructionReference:
     def loadArchitecture(self, name):
         # fix up name
         name = name.lower()
-        if(name == "x86_64" or name == "x86"):
+        if(name == "x86_64" or name == "x86" or name == "i386"):
             name = "x86-64"
 
         self.arch = name
@@ -86,13 +86,14 @@ class InstructionReference:
             inst = row[0]
             lines = row[1].replace("\r\n", "\n").split("\n")
 
-            lines[0] = inst + ": " + lines[0]
+            if not lines[0].startswith("-R:"):
+                lines[0] = inst + ": " + lines[0]
             self.inst_map[inst] = lines
 
         con.close()
 
         for (inst, data) in self.inst_map.iteritems():
-            if(data[0][0:3] == "-R:"):
+            if (data[0].startswith("-R:")):
                 ref = data[0][3:]
 
                 if(ref in self.inst_map):
