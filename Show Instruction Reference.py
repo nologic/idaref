@@ -13,7 +13,13 @@ doc.log("Documentation for instruction at " + hex(adr))
 
 instr = seg.getInstructionAtAddress(adr)
 
-doc.log("Architecture: %s" % instr.stringForArchitecture(instr.getArchitecture()))
+# not sure why but stringForArchitecture returns <unknown> for arm/v7 (id 4)
+if instr.getArchitecture() == 4:
+    arch = "arm/v7"
+else:
+    arch = instr.stringForArchitecture(instr.getArchitecture())
+
+doc.log("Architecture: %s" % arch)
 doc.log("instruction: " + instr.getInstructionString())
 doc.log("instruction length: %d" % instr.getInstructionLength())
 
@@ -61,8 +67,10 @@ class InstructionReference:
     def loadArchitecture(self, name):
         # fix up name
         name = name.lower()
-        if(name == "x86_64" or name == "x86" or name == "i386"):
+        if name == "x86_64" or name == "x86" or name == "i386":
             name = "x86-64"
+        elif name.startswith("arm"):
+            name = "arm"
 
         self.arch = name
 
@@ -132,4 +140,4 @@ class InstructionReference:
             doc.log(inst + " not documented.")
 
 
-ref = InstructionReference(instr.getInstructionString(), instr.stringForArchitecture(instr.getArchitecture()))
+ref = InstructionReference(instr.getInstructionString(), arch)
