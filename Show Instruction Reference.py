@@ -126,8 +126,7 @@ class InstructionReference:
         if(inst in self.inst_map):
             text = self.inst_map[inst]
 
-            for line in text:
-                doc.log(line)
+            doc.log('\n'.join(text))
 
         else:
             doc.log(inst + " not documented.")
