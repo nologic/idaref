@@ -11,7 +11,7 @@ of thought and have to dig out the reference manual. Which got me thinking:
 Enter IdaRef:
 ![](./screenshot/idaref.png)
 The plugin will monitor the location for your cursor (ScreenEA) and display the full
-documentation of the instruction. At the moment it only supports x86-64 and ARM, 
+documentation of the instruction. At the moment it only supports x86-64, ARM and MIPS 32bit, 
 however adding support for other architectures is relatively easy.
 
 Usage
