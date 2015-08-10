@@ -162,20 +162,21 @@ class InstructionReference(idaapi.simplecustviewer_t):
         time.sleep(1)
 
     def cleanInstruction(self, inst):
-        inst = inst.upper()
-        # hacks for x86
-        if(inst[0:1] == 'J' and inst != 'JMP'):
-            inst = "Jcc"
-        elif(inst[0:4] == "LOOP"):
-            inst = "LOOP"
-        elif(inst[0:3] == "INT"):
-            inst = "INT n"
-        elif(inst[0:5] == "FCMOV"):
-            inst = "FCMOVcc"
-        elif(inst[0:4] == "CMOV"):
-            inst = "CMOVcc"
-        elif(inst[0:3] == "SET"):
-            inst = "SETcc"
+        if(self.arch == "x86-64"):
+            inst = inst.upper()
+            # hacks for x86
+            if(inst[0:1] == 'J' and inst != 'JMP'):
+                inst = "Jcc"
+            elif(inst[0:4] == "LOOP"):
+                inst = "LOOP"
+            elif(inst[0:3] == "INT"):
+                inst = "INT n"
+            elif(inst[0:5] == "FCMOV"):
+                inst = "FCMOVcc"
+            elif(inst[0:4] == "CMOV"):
+                inst = "CMOVcc"
+            elif(inst[0:3] == "SET"):
+                inst = "SETcc"
 
         return inst
 
