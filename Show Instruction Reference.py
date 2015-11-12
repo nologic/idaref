@@ -16,6 +16,8 @@ instr = seg.getInstructionAtAddress(adr)
 # not sure why but stringForArchitecture returns <unknown> for arm/v7 (id 4)
 if instr.getArchitecture() == 4:
     arch = "arm/v7"
+elif instr.getArchitecture() == 5:
+    arch = "arm/v8"
 else:
     arch = instr.stringForArchitecture(instr.getArchitecture())
 
