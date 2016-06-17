@@ -18,9 +18,11 @@ Usage
 -----
 Simply checkout or download the repository and install it to your IDA plugins directory:
 
-    idaref.py -> /Applications/IDA Pro 6.8/idaq.app/Contents/MacOS/plugins/idaref.py
-    arm.sql -> /Applications/IDA Pro 6.8/idaq.app/Contents/MacOS/plugins/arm.sql
-    x86-64.sql -> /Applications/IDA Pro 6.8/idaq.app/Contents/MacOS/plugins/x86-64.sql
+    idaref.py -> <ida_path>/plugins/idaref.py
+    arm.sql -> <ida_path>/plugins/arm.sql
+    x86-64.sql -> <ida_path>/plugins/x86-64.sql
+    mips32.sql -> <ida_path>/plugins/mips32.sql
+    xtensa.sql -> <ida_path>/plugins/xtensa.sql
 
 You can also use the installer.sh file but you'll need to open it and edit the IDA path 
 if you're not using Mac OS and IDA 6.8.

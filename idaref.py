@@ -193,7 +193,10 @@ class InstructionReference(idaapi.simplecustviewer_t):
             self.last_inst = inst
         
         self.ClearLines()
-        
+
+        if(inst not in self.inst_map):
+            inst = inst.upper()
+
         if(inst in self.inst_map):
             text = self.inst_map[inst]
 
