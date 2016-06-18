@@ -76,5 +76,7 @@ Ports
 -----
 If you're a hopper user, there is a port called hopperref: https://github.com/zbuc/hopperref
 
+If you're an x64dbg user, IdaRef is integrated with the `mnemonichelp xxx` command or through the context menu. Fork: https://github.com/x64dbg/idaref
+
 Enjoy!
 ------
