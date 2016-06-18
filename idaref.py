@@ -49,10 +49,10 @@ class InstructionReference(idaapi.simplecustviewer_t):
                     if(self.do_auto):
                         self.update()
 
-                    return 1000
+                    return 200
 
             if('register_timer' in dir(idaapi)):
-                idaapi.register_timer(1000, update)
+                idaapi.register_timer(200, update)
 
                 self.is_loaded = True
             else:
