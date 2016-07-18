@@ -70,10 +70,11 @@ class InstructionReference(idaapi.simplecustviewer_t):
             idaapi.close_tform(window, 0)
 
     def findManuals(self):
-        doc_opts = glob.glob(self.base_path + os.sep + "archs" + os.sep + "*.sql")
+        search_path = os.path.join(self.base_path, "archs", "*.sql")
+        doc_opts = glob.glob(search_path)
 
         if(len(doc_opts) == 0):
-            Warning("Couldn't find any databases in " + path)
+            Warning("Couldn't find any databases in " + search_path)
             return
 
         available = []
@@ -113,7 +114,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
         self.arch = name
 
         path = self.base_path
-        dbpath = path + os.sep + "archs" + os.sep + name + ".sql"
+        dbpath = os.path.join(path, "archs", name + ".sql"
 
         if(not os.path.isfile(dbpath)):
             print "Manual not found for architecture: %s" % name
