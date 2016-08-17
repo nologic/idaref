@@ -114,7 +114,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
         self.arch = name
 
         path = self.base_path
-        dbpath = os.path.join(path, "archs", name + ".sql"
+        dbpath = os.path.join(path, "archs", name + ".sql")
 
         if(not os.path.isfile(dbpath)):
             print "Manual not found for architecture: %s" % name
