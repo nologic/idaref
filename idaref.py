@@ -133,14 +133,15 @@ class InstructionReference(idaapi.simplecustviewer_t):
             inst = row[0]
             lines = row[1].replace("\r\n", "\n").split("\n")
 
-            lines[0] = inst + ": " + lines[0]
             self.inst_map[inst] = lines
 
         con.close()
 
         for (inst, data) in self.inst_map.iteritems():
-            if(data[0][0:3] == "-R:"):
-                ref = data[0][3:]
+            data = data[0]
+
+            if(data[0:3] == "-R:"):
+                ref = data[3:]
 
                 if(ref in self.inst_map):
                     self.inst_map[inst] = self.inst_map[ref]
@@ -201,8 +202,10 @@ class InstructionReference(idaapi.simplecustviewer_t):
         if(inst in self.inst_map):
             text = self.inst_map[inst]
 
-            for line in text:
-                self.AddLine(line)
+            if(len(text) > 0):
+                text[0] = inst + ": " + text[0]
+                for line in text:
+                    self.AddLine(line)
 
         else:
             self.AddLine(inst + " not documented.")
