@@ -32,14 +32,14 @@ for line in data.split("\n"):
 	elif(skipBlank and len(line.strip()) > 0):
 		skipBlank = False
 		outlines.append("")
-		outlines.append(line.strip())
+		outlines.append(line)
 	elif(line.find("Vol. ") > 0):
 		while(outlines[len(outlines) - 1] == ''):
 			outlines.pop()
 	elif(line.find("INSTRUCTION SET REFERENCE") >= 0):
 		skipBlank = True
 	else:
-		outlines.append(line.strip())
+		outlines.append(line)
 
 instLines = []
 instBuffer = []
@@ -88,7 +88,8 @@ for docLines in instLines:
 	dash = title.find('-')
 	inst = title[0:dash].strip()
 	instRefs = inst.split('/')
-	
+	print instRefs
+
 	cur.execute("INSERT INTO instructions VALUES (?, ?, ?)", ("x86_64", instRefs[0], "\n".join(docLines)))
 
 	for iref in instRefs[1:]:
