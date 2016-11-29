@@ -90,10 +90,12 @@ for docLines in instLines:
 	instRefs = inst.split('/')
 	print instRefs
 
+	print "INSERT INTO instructions VALUES (?, ?, ?)", ("x86_64", instRefs[0], "\n".join(docLines)[0:20])
 	cur.execute("INSERT INTO instructions VALUES (?, ?, ?)", ("x86_64", instRefs[0], "\n".join(docLines)))
 
 	for iref in instRefs[1:]:
 		iref = iref.strip()
+		print "INSERT INTO instructions VALUES (?, ?, ?)", ("x86_64", iref, "-R:%s" % instRefs[0])
 		cur.execute("INSERT INTO instructions VALUES (?, ?, ?)", ("x86_64", iref, "-R:%s" % instRefs[0]))
 
 con.commit()
