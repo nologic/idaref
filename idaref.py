@@ -203,9 +203,10 @@ class InstructionReference(idaapi.simplecustviewer_t):
             text = self.inst_map[inst]
 
             if(len(text) > 0):
-                text[0] = inst + ": " + text[0]
-                for line in text:
-                    self.AddLine(line)
+                self.AddLine(inst + ": " + text[0])
+                if(len(text) > 1):
+                    for line in text[1:]:
+                        self.AddLine(line)
 
         else:
             self.AddLine(inst + " not documented.")
