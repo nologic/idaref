@@ -73,7 +73,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
                 print "Unable to open"
                 return False
             
-            if IDA_SDK_VERSION >= 700:
+            if idaapi.IDA_SDK_VERSION >= 700:
                 self.menu_update = 1
                 self.menu_lookup = 2
                 self.menu_autorefresh = 3
