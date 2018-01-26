@@ -80,7 +80,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
                 self.change_arch = 4
                 
                 class Hooks(idaapi.UI_Hooks):
-                    class PopupActionHandler(action_handler_t):
+                    class PopupActionHandler(idaapi.action_handler_t):
                         def __init__(self, owner, menu_id):
                             self.owner = owner
                             self.menu_id = menu_id
@@ -95,13 +95,13 @@ class InstructionReference(idaapi.simplecustviewer_t):
                         idaapi.UI_Hooks.__init__(self)
                         self.form = form
                     def finish_populating_widget_popup(self, widget, popup):
-                        if self.form.title == get_widget_title(widget):
-                            attach_dynamic_action_to_popup(widget, popup, action_desc_t(None, "Update View", self.PopupActionHandler(self.form, self.form.menu_update),   None, None, -1))
-                            attach_dynamic_action_to_popup(widget, popup, action_desc_t(None, "Lookup Instruction", self.PopupActionHandler(self.form, self.form.menu_lookup),   None, None, -1))
-                            attach_dynamic_action_to_popup(widget, popup, action_desc_t(None, "Toggle Auto-refresh",      self.PopupActionHandler(self.form, self.form.menu_autorefresh),   None, None, -1))
-                            attach_action_to_popup(widget, popup, "-", None)
-                            attach_dynamic_action_to_popup(widget, popup, action_desc_t(None, "Change Architecture", self.PopupActionHandler(self.form, self.form.change_arch),  None, None, -1))
-                            attach_action_to_popup(widget, popup, "-", None)        
+                        if self.form.title == idaapi.get_widget_title(widget):
+                            idaapi.attach_dynamic_action_to_popup(widget, popup, idaapi.action_desc_t(None, "Update View", self.PopupActionHandler(self.form, self.form.menu_update),   None, None, -1))
+                            idaapi.attach_dynamic_action_to_popup(widget, popup, idaapi.action_desc_t(None, "Lookup Instruction", self.PopupActionHandler(self.form, self.form.menu_lookup),   None, None, -1))
+                            idaapi.attach_dynamic_action_to_popup(widget, popup, idaapi.action_desc_t(None, "Toggle Auto-refresh", self.PopupActionHandler(self.form, self.form.menu_autorefresh),   None, None, -1))
+                            idaapi.attach_action_to_popup(widget, popup, "-", None)
+                            idaapi.attach_dynamic_action_to_popup(widget, popup, idaapi.action_desc_t(None, "Change Architecture", self.PopupActionHandler(self.form, self.form.change_arch),  None, None, -1))
+                            idaapi.attach_action_to_popup(widget, popup, "-", None)        
                 self.hooks = Hooks(self)
                 self.hooks.hook()
             else:
