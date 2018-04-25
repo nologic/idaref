@@ -312,6 +312,7 @@ Inpired by idarest plugin.
 """
 
 MENU_PATH = 'Edit/idaref/'
+ALTERNATIVE_MENU_PATH = 'Edit/Patch Program/'
 class idaref_plugin_t(idaapi.plugin_t):
     flags = idaapi.PLUGIN_KEEP
     comment = ""
@@ -334,8 +335,9 @@ class idaref_plugin_t(idaapi.plugin_t):
     def _add_menus(self):
         ret = []
         if idaapi.IDA_SDK_VERSION <= 695:
-            ret.append(self._add_menu(MENU_PATH, 'Stop IdaRef', '', 1, self.stop, tuple()))
-            ret.append(self._add_menu(MENU_PATH, 'Start IdaRef', '', 1, self.start, tuple()))
+            menu_path = MENU_PATH if idaapi.IDA_SDK_VERSION > 660 else ALTERNATIVE_MENU_PATH
+            ret.append(self._add_menu(menu_path, 'Stop IdaRef', '', 1, self.stop, tuple()))
+            ret.append(self._add_menu(menu_path, 'Start IdaRef', '', 1, self.start, tuple()))
         
         if idaapi.IDA_SDK_VERSION >= 700:
             action_desc = idaapi.action_desc_t(
