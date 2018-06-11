@@ -3,6 +3,8 @@ import sqlite3 as sq
 import os
 import inspect
 import glob
+import idaapi
+from idc import GetMnem, ScreenEA
 
 
 initialized = False
