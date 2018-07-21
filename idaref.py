@@ -136,6 +136,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
     def destroy(self):
         self.destroying = True
         self.is_loaded = False
+        self.hooks.unhook()
         window = idaapi.find_tform(self.title)
 
         if(window):
