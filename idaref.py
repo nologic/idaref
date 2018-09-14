@@ -4,7 +4,7 @@ import os
 import inspect
 import glob
 import idaapi
-from idc import GetMnem, ScreenEA
+from idc import GetMnem, ScreenEA, AskLong
 
 
 initialized = False
