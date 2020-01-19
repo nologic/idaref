@@ -54,3 +54,4 @@ docs/_build/
 
 #sqlite file built from .sql source
 x86-64.sqlite
+.DS_Store
