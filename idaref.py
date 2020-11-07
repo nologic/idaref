@@ -5,7 +5,7 @@ import inspect
 import glob
 import idaapi
 from idc import print_insn_mnem, get_screen_ea
-from ida_kernwin import ask_long, find_widget, close_widget
+from ida_kernwin import ask_long, find_widget, close_widget, ask_str
 
 
 initialized = False
@@ -215,7 +215,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
             prompt.append("%d - %s" % (i, arch))
             i = i + 1
 
-        sel = AskLong(1, "\n".join(prompt))
+        sel = ask_long(1, "\n".join(prompt))
 
         if sel is None:
             return None
@@ -340,7 +340,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
         if menu_id == self.menu_update:
             self.update(True)
         elif menu_id == self.menu_lookup:
-            inst = AskStr(self.last_inst, "Instruction: ")
+            inst = ask_str(self.last_inst, 0, "Instruction: ")
             if inst != None:
                 self.load_inst(inst, True)
         elif menu_id == self.menu_autorefresh:
