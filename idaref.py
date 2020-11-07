@@ -164,7 +164,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
             self.Show()
 
             def update():
-                if self.destroying == True or find_widget(self.title) == None:
+                if self.destroying == True:
                     return -1
                 else:
                     if self.do_auto:
