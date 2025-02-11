@@ -78,7 +78,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
         self.loadArchitecture(self.getIdaArchitecture())
 
     def create(self):
-        if find_widget(self.title) == None:
+        if find_widget(self.title) is None:
             if not idaapi.simplecustviewer_t.Create(self, self.title):
                 print("Unable to open")
                 return False
@@ -163,18 +163,16 @@ class InstructionReference(idaapi.simplecustviewer_t):
 
             self.Show()
 
-            def update():
-                if self.destroying == True:
+            def timer_callback():
+                if self.destroying:
                     return -1
                 else:
                     if self.do_auto:
                         self.update()
-
                     return 200
 
             if "register_timer" in dir(idaapi):
-                idaapi.register_timer(200, update)
-
+                idaapi.register_timer(200, timer_callback)
                 self.is_loaded = True
             else:
                 print("Sorry I can't support auto-refresh in your version of IDA.")
@@ -197,7 +195,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
 
         if len(doc_opts) == 0:
             Warning("Couldn't find any databases in " + search_path)
-            return
+            return []
 
         available = []
 
@@ -208,13 +206,15 @@ class InstructionReference(idaapi.simplecustviewer_t):
         return available
 
     def askArchitecture(self, availList):
+        if not availList:
+            print("No available architectures found. Defaulting to x86-64.")
+            return "x86-64"
         prompt = ["What platform do you want to use?"]
 
         i = 1
         for arch in availList:
             prompt.append("%d - %s" % (i, arch))
-            i = i + 1
-
+            i += 1
         sel = ask_long(1, "\n".join(prompt))
 
         if sel is None:
@@ -272,9 +272,11 @@ class InstructionReference(idaapi.simplecustviewer_t):
         return True
 
     def getIdaArchitecture(self):
-        inf = idaapi.get_inf_structure()
-
-        return inf.procName
+        try:
+            return idaapi.inf_get_procname()
+        except AttributeError:
+            # Fallback for IDA < 9.0
+            return idaapi.get_inf_structure().procName
 
     def OnClose(self):
         self.destroying = True
@@ -306,14 +308,12 @@ class InstructionReference(idaapi.simplecustviewer_t):
 
     def update(self, force=False):
         inst = self.cleanInstruction(print_insn_mnem(get_screen_ea()))
-
-        if inst != self.last_inst or force == True:
+        if inst != self.last_inst or force:
             self.load_inst(inst)
 
     def load_inst(self, inst, wasLookup=False):
         inst = self.cleanInstruction(inst)
-
-        if wasLookup == False:
+        if not wasLookup:
             self.last_inst = inst
 
         self.ClearLines()
@@ -323,8 +323,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
 
         if inst in self.inst_map:
             text = self.inst_map[inst]
-
-            if len(text) > 0:
+            if text:
                 self.AddLine(inst + ": " + text[0])
                 if len(text) > 1:
                     for line in text[1:]:
@@ -341,14 +340,13 @@ class InstructionReference(idaapi.simplecustviewer_t):
             self.update(True)
         elif menu_id == self.menu_lookup:
             inst = ask_str(self.last_inst, 0, "Instruction: ")
-            if inst != None:
+            if inst is not None:
                 self.load_inst(inst, True)
         elif menu_id == self.menu_autorefresh:
             self.do_auto = not self.do_auto
         elif menu_id == self.change_arch:
             arch = self.askArchitecture(self.archs)
-
-            if arch != None:
+            if arch is not None:
                 self.loadArchitecture(arch)
                 self.update(True)
         else:
@@ -423,7 +421,7 @@ class idaref_plugin_t(idaapi.plugin_t):
     def init(self):
         global initialized
         ret = idaapi.PLUGIN_SKIP
-        if initialized == False:
+        if not initialized:
             initialized = True
             self.ctxs = []
             insref_g = None
@@ -435,11 +433,9 @@ class idaref_plugin_t(idaapi.plugin_t):
     def start(self, *args):
         global insref_g
         idaapi.msg("Starting IdaRef\n")
-
-        if insref_g != None and find_widget(insref_g.title) == None:
+        if insref_g is not None and find_widget(insref_g.title) is None:
             self.stop()
-
-        if insref_g == None:
+        if insref_g is None:
             insref_g = InstructionReference(self)
         else:
             print("IdaRef Already started")
@@ -447,8 +443,7 @@ class idaref_plugin_t(idaapi.plugin_t):
     def stop(self, *args):
         global insref_g
         idaapi.msg("Stopping IdaRef\n")
-
-        if insref_g != None:
+        if insref_g is not None:
             insref_g.destroy()
             insref_g = None
         else:
